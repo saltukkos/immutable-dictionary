@@ -22,13 +22,17 @@ namespace ImmutableDictionary.Tests
                 node = node.Insert(random.Next());
             }
 
+            //As written in Knuth, Donald E. (2000). p. 460. ISBN 0-201-89685-0
             Assert.True(node.Height < 1.45 * Math.Log(count + 2, 2));
         }
 
         [Test]
         public void InsertValue_HasSame_ThrowsException()
         {
-            Assert.Throws<NotSupportedException>(() => new AwlNode<int>(10).Insert(10));
+            Assert.Throws<NotSupportedException>(() =>
+            {
+                var unused = new AwlNode<int>(10).Insert(10);
+            });
         }
 
         [Test]
