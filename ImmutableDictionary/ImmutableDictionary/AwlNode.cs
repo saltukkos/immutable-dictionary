@@ -219,6 +219,23 @@ namespace ImmutableDictionary
             return success ? new AwlNode<T>(newLeft, newRight, value).Balance() : this;
         }
 
+        [CanBeNull]
+        public AwlNode<T> FindNode([NotNull] T valueToFind)
+        {
+            var compareResult = valueToFind.CompareTo(Value);
+            if (compareResult > 0)
+            {
+                return Right?.FindNode(valueToFind);
+            }
+
+            if (compareResult < 0)
+            {
+                return Left?.FindNode(valueToFind);
+            }
+
+            return this;
+        }
+
         [Pure]
         public IEnumerator<T> GetEnumerator()
         {

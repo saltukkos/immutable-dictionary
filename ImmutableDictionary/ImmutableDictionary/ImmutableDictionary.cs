@@ -65,55 +65,27 @@ namespace ImmutableDictionary
         public int Count { get; }
 
         [Pure]
-        public bool ContainsKey(TKey key)
+        public bool ContainsKey([NotNull] TKey key)
         {
-            if (_rootNode == null)
+            if (key == null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(key));
             }
-
-            foreach (var actualKey in _rootNode.Select(n => n.Key))
-            {
-                var compareResult = actualKey.CompareTo(key);
-                if (compareResult == 0)
-                {
-                    return true;
-                }
-
-                if (compareResult > 0)
-                {
-                    return false;
-                }
-            }
-
-            return false;
+            return _rootNode?.FindNode(new ComparableKeyValuePair(key, default(TValue))) != null;
         }
 
         [Pure]
         public bool TryGetValue(TKey key, out TValue value)
         {
             value = default(TValue);
-            if (_rootNode == null)
+            var node = _rootNode?.FindNode(new ComparableKeyValuePair(key, default(TValue)));
+            if (node == null)
             {
                 return false;
             }
 
-            foreach (var pair in _rootNode)
-            {
-                var compareResult = pair.Key.CompareTo(key);
-                if (compareResult == 0)
-                {
-                    value = pair.Value;
-                    return true;
-                }
-
-                if (compareResult > 0)
-                {
-                    return false;
-                }
-            }
-
-            return false;
+            value = node.Value.Value;
+            return true;
         }
 
         public TValue this[TKey key]
